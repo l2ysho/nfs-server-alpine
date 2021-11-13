@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  nfs:
+    image: l2ysho/nfs-server-alpine
+    container_name: nfs
+    restart: unless-stopped
+    privileged: true
+    environment:
+    #path to mounted directory
+      - SHARED_DIRECTORY=/data
+    #permit to ip range
+      - PERMITTED=192.168.1.* 
+    volumes:
+      - /path/to/shared/data/folder:/data
+    ports:
+      - 2049:2049

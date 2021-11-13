@@ -37,7 +37,7 @@ fi
 # Check if the SHARED_DIRECTORY_2 variable is empty
 if [ ! -z "${SHARED_DIRECTORY_2}" ]; then
   echo "Writing SHARED_DIRECTORY_2 to /etc/exports file"
-  echo "{{SHARED_DIRECTORY_2}} {{PERMITTED}}({{READ_ONLY}},{{SYNC}},no_subtree_check,no_auth_nlm,insecure,no_root_squash)" >> /etc/exports
+  echo "{{SHARED_DIRECTORY_2}} {{PERMITTED}}({{OPTIONS}})" >> /etc/exports
   /bin/sed -i "s@{{SHARED_DIRECTORY_2}}@${SHARED_DIRECTORY_2}@g" /etc/exports
 fi
 
@@ -52,26 +52,15 @@ else
   /bin/sed -i "s/{{PERMITTED}}/"${PERMITTED}"/g" /etc/exports
 fi
 
-# Check if the READ_ONLY variable is set (rather than a null string) using parameter expansion
-if [ -z ${READ_ONLY+y} ]; then
-  echo "The READ_ONLY environment variable is unset or null, defaulting to 'rw'."
-  echo "Clients have read/write access."
-  /bin/sed -i "s/{{READ_ONLY}}/rw/g" /etc/exports
-else
-  echo "The READ_ONLY environment variable is set."
-  echo "Clients will have read-only access."
-  /bin/sed -i "s/{{READ_ONLY}}/ro/g" /etc/exports
-fi
-
-# Check if the SYNC variable is set (rather than a null string) using parameter expansion
-if [ -z "${SYNC+y}" ]; then
-  echo "The SYNC environment variable is unset or null, defaulting to 'async' mode".
+# Check if the OPTIONS variable is set, then use user definet options or default
+if [ -z "${OPTIONS+y}" ]; then
+  echo "The OPTIONS environment variable is unset or null, defaulting to 'rw,fsid=0,async,no_subtree_check,no_auth_nlm,insecure,anonuid=1000,anongid=1000,all_squash'".
   echo "Writes will not be immediately written to disk."
-  /bin/sed -i "s/{{SYNC}}/async/g" /etc/exports
+  /bin/sed -i "s/{{OPTIONS}}/rw,fsid=0,async,no_subtree_check,no_auth_nlm,insecure,anonuid=1000,anongid=1000,all_squash/g" /etc/exports
 else
   echo "The SYNC environment variable is set, using 'sync' mode".
   echo "Writes will be immediately written to disk."
-  /bin/sed -i "s/{{SYNC}}/sync/g" /etc/exports
+  /bin/sed -i "s/{{OPTIONS}}/"${OPTIONS}"/g" /etc/exports
 fi
 
 # Partially set 'unofficial Bash Strict Mode' as described here: http://redsymbol.net/articles/unofficial-bash-strict-mode/
