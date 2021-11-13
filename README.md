@@ -4,7 +4,9 @@ Fork of [nfs-server-alpine](https://github.com/sjiveson/nfs-server-alpine) with 
 
 All options of export file is able to setup with env variable OPTIONS, default value is: 
 
-`OPTIONS=rw,fsid=0,async,no_subtree_check,no_auth_nlm,insecure,anonuid=1000,anongid=1000,all_squash`
+```
+OPTIONS=rw,fsid=0,async,no_subtree_check,no_auth_nlm,insecure,anonuid=1000,anongid=1000,all_squash
+```
 
 ## basic setup
 
